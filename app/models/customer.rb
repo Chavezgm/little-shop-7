@@ -1,4 +1,0 @@
-class Customer < ApplicationRecord
- 
-
-end
