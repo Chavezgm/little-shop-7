@@ -2,3 +2,13 @@
 <h3>Status: <%= "#{@invoice.status}"%>
 <h3>Created on: <%= "#{@invoice.created_at.strftime("%A, %B %d, %Y")}"%>
 <h3>Customer Name: <%= "#{@invoice.customer.first_name} #{@invoice.customer.last_name}"%>
+
+<h2>Items:</h2>
+	<% @merchant.invoice_items.each do |invoice_item| %> 
+	<div id=<%="invoice_item-#{invoice_item.id}"%>> 
+		<h3>ID: <%= invoice_item.item.name %> </h3>
+		<p>Quantity: <%= invoice_item.quantity %> </p>
+		<p>Unit Price: $<%= invoice_item.converted_unit_price %> </p>
+		<p>Status: <%= invoice_item.status %> 
+
+		</div> <% end %>
