@@ -17,11 +17,13 @@ class Admin::MerchantsController < ApplicationController
 
    def update
       @merchant = Merchant.find(params[:id])
-      
-      if params[:update_status] == "disable"
+      # require 'pry' ; binding.pry
+      if params[:merchant][:update_status] == "disable"
          @merchant.update!(status: :disabled)
          redirect_to admin_merchants_path
-
+      elsif params[:merchant][:update_status] == "enable"
+         @merchant.update!(status: :enabled)
+         redirect_to admin_merchants_path
       elsif @merchant.update(merchant_params)
          redirect_to admin_merchant_path(@merchant.id)
          flash[:alert] = "Merchant Successfully Updated"
@@ -29,8 +31,6 @@ class Admin::MerchantsController < ApplicationController
          flash[:alert] = "Error: #{error_message(@merchant.errors)}"
          redirect_to edit_admin_merchant_path(@merchant.id)
       end
-     
-   
    end
 
 
@@ -39,7 +39,6 @@ class Admin::MerchantsController < ApplicationController
    end
     
    def create
-      
       @merchant = Merchant.new(merchant_params)
 
       if @merchant.save

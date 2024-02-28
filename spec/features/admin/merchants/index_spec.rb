@@ -83,18 +83,23 @@ RSpec.describe 'Admin Merchants Index', type: :feature do
 
          expect(page).to have_content("Merchants")
 
-         within "#merchant-#{@green_merchant.id}" do
-            expect(page).to have_content(@green_merchant.name)
+         within "#enabled_merchants" do
+            within "#merchant-#{@green_merchant.id}" do
+               expect(page).to have_content(@green_merchant.name)
+            end
          end
 
-         within "#merchant-#{@black_merchant.id}" do
-            expect(page).to have_content(@black_merchant.name)
+         within "#disabled_merchants" do 
+            within "#merchant-#{@black_merchant.id}" do
+               expect(page).to have_content(@black_merchant.name)
+            end
          end
 
          within "#merchant-#{@brown_merchant.id}" do
             expect(page).to have_content(@brown_merchant.name)
          end
       end
+
       # User Story 26
       it 'has a link for each merchant' do
          visit admin_merchants_path
@@ -133,22 +138,26 @@ RSpec.describe 'Admin Merchants Index', type: :feature do
       # User Story 27
       it 'can enable or disable a merchant from the admin merchants index' do
          visit admin_merchants_path
-
+         save_and_open_page
          within "#merchant-#{@green_merchant.id}" do
-            expect(page).to have_button("Change Status") 
+            expect(page).to have_button("Disable") 
             expect(page).to have_content("Enabled")
+            click_on "Disable"
          end
          expect(current_path).to eq(admin_merchants_path)
 
+
          within "#merchant-#{@black_merchant.id}" do
-            expect(page).to have_button("Change Status") 
+            expect(page).to have_button("Enable") 
             expect(page).to have_content("Disabled")
+            click_on "Enable"
          end
          expect(current_path).to eq(admin_merchants_path)
 
          within "#merchant-#{@brown_merchant.id}" do
-            expect(page).to have_button("Change Status") 
+            expect(page).to have_button("Disable") 
             expect(page).to have_content("Enabled")
+            click_on "Disable"
          end
          expect(current_path).to eq(admin_merchants_path)
       end
@@ -203,10 +212,12 @@ RSpec.describe 'Admin Merchants Index', type: :feature do
          visit admin_merchants_path
    
          expect(page).to have_content("Top 5 Merchants by Revenue")
-         expect(@black_merchant.name).to appear_before(@green_merchant.name) # $66.00
-         expect(@green_merchant.name).to appear_before(@blue_merchant.name) # $44.00
-         expect(@blue_merchant.name).to appear_before(@white_merchant.name) # $34.00
-         expect(@white_merchant.name).to appear_before(@brown_merchant.name) # $26.00 / $24.00
+         within "#top_merchants" do
+            expect(@black_merchant.name).to appear_before(@green_merchant.name) # $66.00
+            expect(@green_merchant.name).to appear_before(@blue_merchant.name) # $44.00
+            expect(@blue_merchant.name).to appear_before(@white_merchant.name) # $34.00
+            expect(@white_merchant.name).to appear_before(@brown_merchant.name) # $26.00 / $24.00
+         end
 
     
       end
@@ -215,7 +226,7 @@ RSpec.describe 'Admin Merchants Index', type: :feature do
       it "displays the date of the top 5 merchants most profitable days" do 
          visit admin_merchants_path
 
-         within ".top_merchants" do
+         within "#top_merchants" do
 
          expect(page).to have_content(@green_merchant.name)
          expect(page).to have_content(@green_merchant.best_day.strftime("%B %d, %Y"))

@@ -1,42 +1,37 @@
 <h1>Merchants</h1>
 
-<ul>
-   <% @merchants.each do |merchant| %>
-   <li>
-      <div id="merchant-<%= merchant.id %>">
-         <h3>Merchant: <%= link_to merchant.name, admin_merchant_path(merchant.id) %></h3>
-       <p> Status: <%= merchant.status.capitalize %></p>
-      <% if merchant.status == "enabled" %>
-        <p><%= button_to "Change Status", admin_merchant_path(merchant.id, update_status: "disable"), method: :patch  %></p> 
-        <% else %>
-          <p><%= button_to "Change Status", admin_merchant_path(merchant.id, update_status: "enable"), method: :patch  %></p> 
-        <% end %>    
-      </div>
-   </li>
-  <% end %>
-</ul>
-
-<h3>Enabled Merchants</h3>
+<h2>Enabled Merchants</h2>
 <div id="enabled_merchants">
   <% @enabled_merchants.each do |merchant| %>
-    <div id="enabled-merchant-<%= merchant.id %>">
-      <%= merchant.name %>
+    <div id="merchant-<%= merchant.id %>">
+      <h4>Merchant: <%= link_to merchant.name, admin_merchant_path(merchant.id) %></h4>
+        <p> Status: <%= merchant.status.capitalize %></p>
+        <%= form_with model: [:admin, merchant], data: {turbo: false}, method: :patch, local: true do |f| %>
+          <%= f.hidden_field :update_status, value: "disable" %>
+          <%= f.submit "Disable" %>
+        <% end %>
     </div>
   <% end %>
 </div>
 
-<h3>Disabled Merchants</h3>
+<h2>Disabled Merchants</h2>
 <div id="disabled_merchants">
   <% @disabled_merchants.each do |merchant| %>
-    <div id="disabled-merchant-<%= merchant.id %>">
-      <%= merchant.name %>
+    <div id="merchant-<%= merchant.id %>">
+      <h4>Merchant: <%= link_to merchant.name, admin_merchant_path(merchant.id) %></h4>
+        <p> Status: <%= merchant.status.capitalize %></p>
+        <%= form_with model: [:admin, merchant], data: {turbo: false}, method: :patch, local: true do |f| %>
+          <%= f.hidden_field :update_status, value: "enable" %>
+          <%= f.submit "Enable" %>
+        <% end %>
     </div>
   <% end %>
 </div>
+<p>-</p>
 
 <%= link_to 'Create New Merchant', new_admin_merchant_path %>
 
-<section class="top_merchants">
+<div id="top_merchants">
   <h2>Top 5 Merchants by Revenue</h2>
   <% @merchants.each do |merchant| %>
     <div>
@@ -46,4 +41,4 @@
       <p>Top selling date for <%= merchant.name %> was <%= top_day.strftime("%B %d, %Y") if top_day.present? %></p>
     </div>
   <% end %>
-</section>
+</div>

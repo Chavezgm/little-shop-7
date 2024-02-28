@@ -51,8 +51,38 @@ namespace :csv_load do
 
   end
 
-  # Merchant needs to be created before Items. Customer needs to be created before Invoices.
-  # Invoice need to be created before Transaction and before InvoiceItems.
+  desc "loads all data"
+  task all: :environment do
+    CSV.foreach("db/data/merchants.csv", headers: true) do |row|
+      Merchant.create!(row.to_hash)
+      reset_pk("merchants")
+    end 
+
+    CSV.foreach("db/data/items.csv", headers: true) do |row|
+      Item.create!(row.to_hash)
+      reset_pk("items")
+    end 
+
+    CSV.foreach("db/data/customers.csv", headers: true) do |row|
+      Customer.create!(row.to_hash)
+      reset_pk("customers")
+    end 
+
+    CSV.foreach("db/data/invoices.csv", headers: true) do |row|
+      Invoice.create!(row.to_hash)
+      reset_pk("invoices")
+    end 
+    
+    CSV.foreach("db/data/invoice_items.csv", headers: true) do |row|
+      InvoiceItem.create!(row.to_hash)
+      reset_pk("invoice_items")
+    end 
+
+    CSV.foreach("db/data/transactions.csv", headers: true) do |row|
+      Transaction.create!(row.to_hash)
+      reset_pk("transactions")
+    end 
+  end
 end
 
 def reset_pk(table_name)
