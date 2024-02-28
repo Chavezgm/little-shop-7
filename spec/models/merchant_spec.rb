@@ -3,7 +3,9 @@ require 'rails_helper'
 RSpec.describe Merchant, type: :model do
    describe 'relationships' do
       it { should have_many :items }
-      it { should have_many(:invoices).through(:items) }
+      it { should have_many(:invoice_items).through(:items)}
+      it { should have_many(:invoices).through(:invoice_items) }
+      it { should have_many(:customers).through(:invoices) }
    end
 
    it "top_5_customers" do
@@ -42,15 +44,6 @@ RSpec.describe Merchant, type: :model do
       invoice9 = FactoryBot.create(:invoice, customer_id: @cust_5.id, status: 1)  #cust_5 = 27
       invoice10 = FactoryBot.create(:invoice, customer_id: @cust_5.id, status: 1)
       
-      # transaction1 = FactoryBot.create(:transaction, invoice: invoice1, result: 0)
-      # transaction2 = FactoryBot.create(:transaction, invoice: invoice2, result: 0)
-      # transaction3 = FactoryBot.create(:transaction, invoice: invoice3, result: 0)
-      # transaction4 = FactoryBot.create(:transaction, invoice: invoice4, result: 0)
-      # transaction5 = FactoryBot.create(:transaction, invoice: invoice5, result: 0)
-      # transaction6 = FactoryBot.create(:transaction, invoice: invoice6, result: 0)
-      # transaction7 = FactoryBot.create(:transaction, invoice: invoice7, result: 0)
-      # transaction8 = FactoryBot.create(:transaction, invoice: invoice8, result: 0)
-      # transaction9 = FactoryBot.create(:transaction, invoice: invoice9, result: 0)
       transaction10 = FactoryBot.create(:transaction, invoice: invoice10, result: 1)  #cust_5 = 27 successful transactions and 1 is unsuccessful so it should still give us 27 successful transactions 
 
       expect(@green_merchant.top_five_customers).to eq([@cust_5,@cust_2,@cust_1,@cust_3,@cust_4])
@@ -58,4 +51,28 @@ RSpec.describe Merchant, type: :model do
 
    end
 
+   it "#pending_items" do
+      merchant1 = create(:merchant) 
+      merchant2 = create(:merchant)
+
+      merchant1_items = create_list(:item, 5, merchant: merchant1)
+      merchant2_items = create_list(:item, 5, merchant: merchant2)
+      create(:invoice_item, item: merchant1_items[0], status: "pending")
+      create(:invoice_item, item: merchant1_items[1], status: "packaged")
+      create(:invoice_item, item: merchant1_items[2], status: "pending")
+      create(:invoice_item, item: merchant1_items[3], status: "shipped")
+      create(:invoice_item, item: merchant1_items[4], status: "shipped")
+
+      create(:invoice_item, item: merchant2_items[0], status: "pending")
+      create(:invoice_item, item: merchant2_items[1], status: "shipped")
+      create(:invoice_item, item: merchant2_items[2], status: "packaged")
+      create(:invoice_item, item: merchant2_items[3], status: "shipped")
+      create(:invoice_item, item: merchant2_items[4], status: "shipped")
+
+      # expect(merchant1.shipable_items).to eq([merchant1_items[0], merchant1_items[1], merchant1_items[2]])
+
+      # expect(merchant2.shipable_items).to eq([merchant2_items[0], merchant2_items[2]])
+
+   end
 end
+

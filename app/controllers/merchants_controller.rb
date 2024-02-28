@@ -1,5 +1,5 @@
 class MerchantsController < ApplicationController
-  def show
-    @merchant = Merchant.find(params[:merchant_id])
+  def dashboard
+    @merchant = Merchant.find(params[:id])
   end
 end

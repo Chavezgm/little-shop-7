@@ -35,3 +35,15 @@
 </div>
 
 <%= link_to 'Create New Merchant', new_admin_merchant_path %>
+
+<section class="top_merchants">
+  <h2>Top 5 Merchants by Revenue</h2>
+  <% @merchants.each do |merchant| %>
+    <div>
+      <%= link_to merchant.name, admin_merchant_path(merchant) %>
+      <p>Revenue: <%= number_to_currency(merchant.revenue) %></p>
+      <% top_day = merchant.best_day %>
+      <p>Top selling date for <%= merchant.name %> was <%= top_day.strftime("%B %d, %Y") if top_day.present? %></p>
+    </div>
+  <% end %>
+</section>

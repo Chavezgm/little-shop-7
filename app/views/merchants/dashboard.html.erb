@@ -1,0 +1,25 @@
+<h1>Merchant Name: <%= @merchant.name %></h1>
+
+<%= link_to 'My Items', merchant_items_path(@merchant) %>
+<%= link_to 'My Invoices', merchant_invoices_path(@merchant) %>
+
+
+<h2>Top 5 Customers:</h2>
+
+<% @merchant.top_five_customers.each do |customer| %>
+  <section id="customer_<%= customer.id %>">
+    <p>Customer: <%= customer.first_name %> <%= customer.last_name %> </p> <p>Number of Successful Transactions: <%= customer.successful_trans_count %></p>
+  </section>
+<% end %>
+
+    <section class="items_ready_to_ship">
+  <h3> Unshipped Items </h3>
+
+  <% @merchant.invoices_with_items_ready_to_ship.each do |invoice_item| %>
+    <div id="invoice-item-<%= invoice_item.id %>">
+      <h4>Item Name: <%= invoice_item.item.name %></h4>
+      <p>Invoice ID #: <%= link_to "##{invoice_item.invoice_id}", merchant_invoice_path(@merchant, invoice_item.invoice_id), method: :get %></p>
+      <p><b>Ordered Placed On: </b><i><%= invoice_item.invoice.created_at.strftime('%A, %B %d, %Y') %></i></p>
+    </div>
+  <% end %>
+</section>

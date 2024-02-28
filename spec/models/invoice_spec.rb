@@ -52,4 +52,12 @@ RSpec.describe Invoice, type: :model do
          transaction10 = create(:transaction, invoice: invoice10, result: 0)   
       end
    end
+
+   # describe "instance methods" do
+   #    it "#formatted_date" do
+   #       @cust_1 = Customer.create!(first_name: "Joey", last_name: "Ondricka")
+   #       @invoice1 = Invoice.create!(customer_id: @cust_1.id, status: 1)
+   #       expect(@invoice1.created_at.formatted_date).to eq("Wednesday, February 28, 2024")
+   #    end
+   # end
 end

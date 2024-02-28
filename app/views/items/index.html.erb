@@ -1,0 +1,39 @@
+<h1>Merchant Name: <%= @merchant.name %></h1>
+<%= link_to 'New Item',new_merchant_item_path(@merchant) %>
+<section class='disabled_items'>
+  <h2>Disabled Items</h2>
+  <% @items.disabled_items.each do |item|  %>
+    <section id="item-<%= item.id %>">
+      <p>Item name: <%= link_to "#{item.name}", merchant_item_path(@merchant, item), method: :get %></p>
+      <p>Status: <%= item.status %> </p>
+      <%= button_to 'Enable', merchant_item_path(@merchant, item),  params: {status: 'enabled'}, method: :patch %>
+    </section>
+  <% end %>
+  
+</section>
+
+<section class='enabled_items'>
+  <h2>Enabled Items</h2>
+  <% @items.enabled_items.each do |item|  %>
+    <section id="item-<%= item.id %>">
+      <p>Item name: <%= link_to "#{item.name}", merchant_item_path(@merchant, item), method: :get %></p>
+      <p>Status: <%= item.status %> </p>
+      <%= button_to 'Disable', merchant_item_path(@merchant, item), params: {status: 'disabled'}, method: :patch %>
+    </section>
+  <% end %>
+</section>
+
+<section class='top_5_item'>
+  <h3>Top 5 Items:</h3>
+  <% @items.top_5_items.each do |item| %>
+    <section id="top_item<%= item.id %>">
+   <p><%= link_to item.name, merchant_item_path(@merchant,item), method: :get %> Total Revenue: <%= number_to_currency(item.total_rev) %></p>
+      <p>Top selling date for <%=item.name%> was <%= item.best_day.strftime('%A, %B %d, %Y') %></p>
+    </section>
+    
+  <% end  %>
+
+</section>
+
+
+

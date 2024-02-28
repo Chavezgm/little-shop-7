@@ -14,10 +14,21 @@ RSpec.describe 'Admin Merchants Index', type: :feature do
          @brown_merchant = Merchant.create!(name: "Brown Inc", status: 0)
          @white_merchant = Merchant.create!(name: "White Inc", status: 0)
          @blue_merchant = Merchant.create!(name: "Blue Inc", status: 1)
+         @grey_merchant = Merchant.create!(name: "Grey Inc", status: 1)
 
-         item1 = create(:item, name: "table", merchant: @green_merchant)
-         item2 = create(:item, name: "pen", merchant: @black_merchant)
-         item3 = create(:item, name: "paper", merchant: @brown_merchant)
+
+         @item1 = create(:item, name: "table", merchant: @green_merchant)
+         @item4 = create(:item, name: "box", merchant: @green_merchant)
+         @item2 = create(:item, name: "pen", merchant: @black_merchant)
+         @item5 = create(:item, name: "chair", merchant: @black_merchant)
+         @item3 = create(:item, name: "paper", merchant: @brown_merchant)
+         @item6 = create(:item, name: "computer", merchant: @brown_merchant)
+         @item7 = create(:item, name: "door", merchant: @white_merchant)
+         @item8 = create(:item, name: "glass", merchant: @white_merchant)
+         @item9 = create(:item, name: "stapler", merchant: @blue_merchant)
+         @item10 = create(:item, name: "paper_clip", merchant: @blue_merchant)
+         @item11 = create(:item, name: "cup", merchant: @grey_merchant)
+         @item12 = create(:item, name: "bottle", merchant: @grey_merchant)
          
          @invoice1 = create(:invoice, customer_id: @customer_1.id, status: 0)
          @invoice6 = create(:invoice, customer_id: @customer_1.id, status: 1)
@@ -44,10 +55,26 @@ RSpec.describe 'Admin Merchants Index', type: :feature do
          transaction9= create(:transaction, invoice: @invoice9, result: 0)
          transaction10 = create(:transaction, invoice: @invoice10, result: 0)
             
-         @invoice_item_1 = create(:invoice_item, status: 0, invoice: @invoice1)
-         @invoice_item_2 = create(:invoice_item, status: 0, invoice: @invoice2)
-         @invoice_item_3 = create(:invoice_item, status: 0, invoice: @invoice3)
-         # binding.pry
+         @invoiceitem1 = InvoiceItem.create!(invoice: @invoice1, item: @item1, quantity: 5, unit_price: 1, status: 0 )
+         # @invoiceitem2 = InvoiceItem.create!(invoice: @invoice1, item: @item2, quantity: 5, unit_price: 1, status: 0 )
+         # @invoiceitem3 = InvoiceItem.create!(invoice: @invoice2, item: @item2, quantity: 5, unit_price: 1, status: 0 )
+         @invoiceitem4 = InvoiceItem.create!(invoice: @invoice2, item: @item3, quantity: 6, unit_price: 1, status: 0 )
+         # @invoiceitem5 = InvoiceItem.create!(invoice: @invoice3, item: @item2, quantity: 6, unit_price: 1, status: 0 )
+         @invoiceitem6 = InvoiceItem.create!(invoice: @invoice3, item: @item3, quantity: 6, unit_price: 1, status: 0 )
+         @invoiceitem7 = InvoiceItem.create!(invoice: @invoice4, item: @item1, quantity: 7, unit_price: 1, status: 0 )
+         # @invoiceitem8 = InvoiceItem.create!(invoice: @invoice4, item: @item3, quantity: 10, unit_price: 1, status: 0 )
+         @invoiceitem9 = InvoiceItem.create!(invoice: @invoice5, item: @item2, quantity: 10, unit_price: 1, status: 0 )
+         # @invoiceitem10 = InvoiceItem.create!(invoice: @invoice5, item: @item3, quantity: 10, unit_price: 1, status: 0 )
+         # @invoiceitem11 = InvoiceItem.create!(invoice: @invoice6, item: @item1, quantity: 8, unit_price: 1, status: 0 )
+         @invoiceitem12 = InvoiceItem.create!(invoice: @invoice6, item: @item2, quantity: 8, unit_price: 1, status: 0 )
+         # @invoiceitem13 = InvoiceItem.create!(invoice: @invoice7, item: @item3, quantity: 8, unit_price: 1, status: 0 )
+         @invoiceitem14 = InvoiceItem.create!(invoice: @invoice7, item: @item4, quantity: 10, unit_price: 1, status: 0 )
+         @invoiceitem15 = InvoiceItem.create!(invoice: @invoice8, item: @item5, quantity: 15, unit_price: 1, status: 0 )
+         # @invoiceitem16 = InvoiceItem.create!(invoice: @invoice8, item: @item7, quantity: 13, unit_price: 1, status: 0 )
+         @invoiceitem17 = InvoiceItem.create!(invoice: @invoice9, item: @item9, quantity: 17, unit_price: 1, status: 0 )
+         # @invoiceitem18 = InvoiceItem.create!(invoice: @invoice9, item: @item11, quantity: 2, unit_price: 1, status: 0 )         
+         @invoiceitem19 = InvoiceItem.create!(invoice: @invoice10, item: @item7, quantity: 13, unit_price: 1, status: 0 )
+         # @invoiceitem20 = InvoiceItem.create!(invoice: @invoice10, item: @item9, quantity: 17, unit_price: 1, status: 0 )
       end
 
       # User Story 24
@@ -135,7 +162,6 @@ RSpec.describe 'Admin Merchants Index', type: :feature do
 
          within "#enabled_merchants" do 
             expect(page).to have_content(@green_merchant.name)
-
             expect(page).to have_content(@brown_merchant.name)
          end
 
@@ -171,5 +197,43 @@ RSpec.describe 'Admin Merchants Index', type: :feature do
          expect(current_path).to eq(new_admin_merchant_path)
          expect(page).to have_content("Error:")
       end
+
+      # User Story 30 
+      it "displays a top 5 merchant section, with names of the merchants as links to their show page, and also shows the total revenue generated next to its name" do
+         visit admin_merchants_path
+   
+         expect(page).to have_content("Top 5 Merchants by Revenue")
+         expect(@black_merchant.name).to appear_before(@green_merchant.name) # $66.00
+         expect(@green_merchant.name).to appear_before(@blue_merchant.name) # $44.00
+         expect(@blue_merchant.name).to appear_before(@white_merchant.name) # $34.00
+         expect(@white_merchant.name).to appear_before(@brown_merchant.name) # $26.00 / $24.00
+
+    
+      end
+
+      # User Story 31 
+      it "displays the date of the top 5 merchants most profitable days" do 
+         visit admin_merchants_path
+
+         within ".top_merchants" do
+
+         expect(page).to have_content(@green_merchant.name)
+         expect(page).to have_content(@green_merchant.best_day.strftime("%B %d, %Y"))
+         
+         expect(page).to have_content(@black_merchant.name)
+         expect(page).to have_content(@black_merchant.best_day.strftime("%B %d, %Y"))
+
+         expect(page).to have_content(@brown_merchant.name)
+         expect(page).to have_content(@brown_merchant.best_day.strftime("%B %d, %Y"))
+
+         expect(page).to have_content(@blue_merchant.name)
+         expect(page).to have_content(@blue_merchant.best_day.strftime("%B %d, %Y"))
+
+         expect(page).to have_content(@white_merchant.name)
+         expect(page).to have_content(@white_merchant.best_day.strftime("%B %d, %Y"))
+         
+         end
+      end
+   
    end
 end

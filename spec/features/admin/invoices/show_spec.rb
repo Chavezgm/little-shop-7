@@ -43,7 +43,7 @@ RSpec.describe 'Admin Invoice Show', type: :feature do
       # User Story 34
       it 'displays the Invoice Item Information to that Invoice' do
          visit admin_invoice_path(@invoice1.id)
-         # save_and_open_page
+        
          within "#invoice_items" do
             expect(page).to have_content("Invoice Items")
 

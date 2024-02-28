@@ -4,7 +4,7 @@ class Admin::MerchantsController < ApplicationController
       @merchants = Merchant.all
       @enabled_merchants = Merchant.where(status: :enabled)
       @disabled_merchants = Merchant.where(status: :disabled)
-
+      @merchants = Merchant.top_five_merchants
    end
 
    def show
