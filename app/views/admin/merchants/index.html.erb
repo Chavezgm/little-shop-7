@@ -1,12 +1,10 @@
 <h1>Merchants</h1>
 
-
-
-<h3>Enabled Merchants</h3>
+<h2>Enabled Merchants</h2>
 <div id="enabled_merchants">
   <% @enabled_merchants.each do |merchant| %>
     <div id="merchant-<%= merchant.id %>">
-      <h3>Merchant: <%= link_to merchant.name, admin_merchant_path(merchant.id) %></h3>
+      <h4>Merchant: <%= link_to merchant.name, admin_merchant_path(merchant.id) %></h4>
         <p> Status: <%= merchant.status.capitalize %></p>
         <%= form_with model: [:admin, merchant], data: {turbo: false}, method: :patch, local: true do |f| %>
           <%= f.hidden_field :update_status, value: "disable" %>
@@ -16,11 +14,11 @@
   <% end %>
 </div>
 
-<h3>Disabled Merchants</h3>
+<h2>Disabled Merchants</h2>
 <div id="disabled_merchants">
   <% @disabled_merchants.each do |merchant| %>
     <div id="merchant-<%= merchant.id %>">
-      <h3>Merchant: <%= link_to merchant.name, admin_merchant_path(merchant.id) %></h3>
+      <h4>Merchant: <%= link_to merchant.name, admin_merchant_path(merchant.id) %></h4>
         <p> Status: <%= merchant.status.capitalize %></p>
         <%= form_with model: [:admin, merchant], data: {turbo: false}, method: :patch, local: true do |f| %>
           <%= f.hidden_field :update_status, value: "enable" %>
@@ -29,6 +27,7 @@
     </div>
   <% end %>
 </div>
+<p>-</p>
 
 <%= link_to 'Create New Merchant', new_admin_merchant_path %>
 
