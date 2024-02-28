@@ -60,7 +60,7 @@ RSpec.describe 'Admin Invoice Show', type: :feature do
       it 'displays the total revenue that will generate this invoice' do
          visit admin_invoice_path(@invoice1.id)
 
-         expect(page).to have_content(@invoice_item_1.total_revenue)
+         expect(page).to have_content(@invoice_item_1.total_revenue.round(2))
       end
 
       # User Story 36
