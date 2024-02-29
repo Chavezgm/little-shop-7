@@ -17,7 +17,6 @@ RSpec.describe InvoiceItem, type: :model do
    describe '#total_revenue' do
       it 'calculated the revenue for a invoice item' do
          invoice_item = create(:invoice_item, unit_price: 40000, quantity: 5)
-
          expect(invoice_item.total_revenue).to eq(2000.00)
 
       end

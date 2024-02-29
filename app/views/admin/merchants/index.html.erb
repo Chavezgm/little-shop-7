@@ -1,44 +1,60 @@
-<h1>Merchants</h1>
 
-<h2>Enabled Merchants</h2>
-<div id="enabled_merchants">
-  <% @enabled_merchants.each do |merchant| %>
-    <div id="merchant-<%= merchant.id %>">
-      <h4>Merchant: <%= link_to merchant.name, admin_merchant_path(merchant.id) %></h4>
-        <p> Status: <%= merchant.status.capitalize %></p>
-        <%= form_with model: [:admin, merchant], data: {turbo: false}, method: :patch, local: true do |f| %>
-          <%= f.hidden_field :update_status, value: "disable" %>
-          <%= f.submit "Disable" %>
+<div class="merchants-container">
+  <div class="merchants-table">
+    <div class="heading">
+    <h1>Merchants</h1>
+
+      <div class="merchants-btn">
+        <%= link_to 'Create New Merchant', new_admin_merchant_path %>
+      </div>
+    </div>
+
+    <div id="enabled-merchants">
+      <h2>Enabled Merchants</h2>
+      <% @enabled_merchants.each do |merchant| %>
+        <div id="merchant-<%= merchant.id %>" class="merchant-box">
+          <h4>Merchant: <%= link_to merchant.name, admin_merchant_path(merchant.id) %></h4>
+            <p> Status: <%= merchant.status.capitalize %></p>
+            <%= form_with model: [:admin, merchant], data: {turbo: false}, method: :patch, local: true do |f| %>
+              <%= f.hidden_field :update_status, value: "disable" %>
+              <div class="merchants-btn">
+                <%= f.submit "Disable" %>
+              </div>
+            <% end %>
+        </div>
+      <% end %>
+    </div>
+
+
+    <div id="disabled-merchants">
+      <h2>Disabled Merchants</h2>
+        <% @disabled_merchants.each do |merchant| %>
+          <div id="merchant-<%= merchant.id %>" class="merchant-box">
+            <h4>Merchant: <%= link_to merchant.name, admin_merchant_path(merchant.id) %></h4>
+              <p> Status: <%= merchant.status.capitalize %></p>
+              <%= form_with model: [:admin, merchant], data: {turbo: false}, method: :patch, local: true do |f| %>
+                <%= f.hidden_field :update_status, value: "enable" %>
+              <div class="merchants-btn">
+                <%= f.submit "Enable" %>
+              </div>
+
+              <% end %>
+          </div>
         <% end %>
     </div>
-  <% end %>
-</div>
 
-<h2>Disabled Merchants</h2>
-<div id="disabled_merchants">
-  <% @disabled_merchants.each do |merchant| %>
-    <div id="merchant-<%= merchant.id %>">
-      <h4>Merchant: <%= link_to merchant.name, admin_merchant_path(merchant.id) %></h4>
-        <p> Status: <%= merchant.status.capitalize %></p>
-        <%= form_with model: [:admin, merchant], data: {turbo: false}, method: :patch, local: true do |f| %>
-          <%= f.hidden_field :update_status, value: "enable" %>
-          <%= f.submit "Enable" %>
-        <% end %>
+  </div>
+
+
+    <div class="top-merchants">
+      <h2>Top 5 Merchants by Revenue</h2>
+      <% @merchants.each do |merchant| %>
+        <div>
+          <%= link_to merchant.name, admin_merchant_path(merchant) %>
+          <p>Revenue: <%= number_to_currency(merchant.revenue) %></p>
+          <% top_day = merchant.best_day %>
+          <p>Top selling date for <%= merchant.name %> was <%= top_day.strftime("%B %d, %Y") if top_day.present? %></p>
+        </div>
+      <% end %>
     </div>
-  <% end %>
-</div>
-<p>-</p>
-
-<%= link_to 'Create New Merchant', new_admin_merchant_path %>
-
-<div id="top_merchants">
-  <h2>Top 5 Merchants by Revenue</h2>
-  <% @merchants.each do |merchant| %>
-    <div>
-      <%= link_to merchant.name, admin_merchant_path(merchant) %>
-      <p>Revenue: <%= number_to_currency(merchant.revenue) %></p>
-      <% top_day = merchant.best_day %>
-      <p>Top selling date for <%= merchant.name %> was <%= top_day.strftime("%B %d, %Y") if top_day.present? %></p>
-    </div>
-  <% end %>
 </div>

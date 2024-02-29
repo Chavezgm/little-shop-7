@@ -56,25 +56,15 @@ RSpec.describe 'Admin Merchants Index', type: :feature do
          transaction10 = create(:transaction, invoice: @invoice10, result: 0)
             
          @invoiceitem1 = InvoiceItem.create!(invoice: @invoice1, item: @item1, quantity: 5, unit_price: 1, status: 0 )
-         # @invoiceitem2 = InvoiceItem.create!(invoice: @invoice1, item: @item2, quantity: 5, unit_price: 1, status: 0 )
-         # @invoiceitem3 = InvoiceItem.create!(invoice: @invoice2, item: @item2, quantity: 5, unit_price: 1, status: 0 )
          @invoiceitem4 = InvoiceItem.create!(invoice: @invoice2, item: @item3, quantity: 6, unit_price: 1, status: 0 )
-         # @invoiceitem5 = InvoiceItem.create!(invoice: @invoice3, item: @item2, quantity: 6, unit_price: 1, status: 0 )
          @invoiceitem6 = InvoiceItem.create!(invoice: @invoice3, item: @item3, quantity: 6, unit_price: 1, status: 0 )
          @invoiceitem7 = InvoiceItem.create!(invoice: @invoice4, item: @item1, quantity: 7, unit_price: 1, status: 0 )
-         # @invoiceitem8 = InvoiceItem.create!(invoice: @invoice4, item: @item3, quantity: 10, unit_price: 1, status: 0 )
          @invoiceitem9 = InvoiceItem.create!(invoice: @invoice5, item: @item2, quantity: 10, unit_price: 1, status: 0 )
-         # @invoiceitem10 = InvoiceItem.create!(invoice: @invoice5, item: @item3, quantity: 10, unit_price: 1, status: 0 )
-         # @invoiceitem11 = InvoiceItem.create!(invoice: @invoice6, item: @item1, quantity: 8, unit_price: 1, status: 0 )
          @invoiceitem12 = InvoiceItem.create!(invoice: @invoice6, item: @item2, quantity: 8, unit_price: 1, status: 0 )
-         # @invoiceitem13 = InvoiceItem.create!(invoice: @invoice7, item: @item3, quantity: 8, unit_price: 1, status: 0 )
          @invoiceitem14 = InvoiceItem.create!(invoice: @invoice7, item: @item4, quantity: 10, unit_price: 1, status: 0 )
          @invoiceitem15 = InvoiceItem.create!(invoice: @invoice8, item: @item5, quantity: 15, unit_price: 1, status: 0 )
-         # @invoiceitem16 = InvoiceItem.create!(invoice: @invoice8, item: @item7, quantity: 13, unit_price: 1, status: 0 )
          @invoiceitem17 = InvoiceItem.create!(invoice: @invoice9, item: @item9, quantity: 17, unit_price: 1, status: 0 )
-         # @invoiceitem18 = InvoiceItem.create!(invoice: @invoice9, item: @item11, quantity: 2, unit_price: 1, status: 0 )         
          @invoiceitem19 = InvoiceItem.create!(invoice: @invoice10, item: @item7, quantity: 13, unit_price: 1, status: 0 )
-         # @invoiceitem20 = InvoiceItem.create!(invoice: @invoice10, item: @item9, quantity: 17, unit_price: 1, status: 0 )
       end
 
       # User Story 24
@@ -83,13 +73,13 @@ RSpec.describe 'Admin Merchants Index', type: :feature do
 
          expect(page).to have_content("Merchants")
 
-         within "#enabled_merchants" do
+         within "#enabled-merchants" do
             within "#merchant-#{@green_merchant.id}" do
                expect(page).to have_content(@green_merchant.name)
             end
          end
 
-         within "#disabled_merchants" do 
+         within "#disabled-merchants" do 
             within "#merchant-#{@black_merchant.id}" do
                expect(page).to have_content(@black_merchant.name)
             end
@@ -138,7 +128,7 @@ RSpec.describe 'Admin Merchants Index', type: :feature do
       # User Story 27
       it 'can enable or disable a merchant from the admin merchants index' do
          visit admin_merchants_path
-         save_and_open_page
+        
          within "#merchant-#{@green_merchant.id}" do
             expect(page).to have_button("Disable") 
             expect(page).to have_content("Enabled")
@@ -169,12 +159,12 @@ RSpec.describe 'Admin Merchants Index', type: :feature do
          expect(page).to have_content("Enabled Merchants")
          expect(page).to have_content("Disabled Merchants")
 
-         within "#enabled_merchants" do 
+         within "#enabled-merchants" do 
             expect(page).to have_content(@green_merchant.name)
             expect(page).to have_content(@brown_merchant.name)
          end
 
-         within "#disabled_merchants" do 
+         within "#disabled-merchants" do 
             expect(page).to have_content(@black_merchant.name)
          end
       end
@@ -212,7 +202,7 @@ RSpec.describe 'Admin Merchants Index', type: :feature do
          visit admin_merchants_path
    
          expect(page).to have_content("Top 5 Merchants by Revenue")
-         within "#top_merchants" do
+         within ".top-merchants" do
             expect(@black_merchant.name).to appear_before(@green_merchant.name) # $66.00
             expect(@green_merchant.name).to appear_before(@blue_merchant.name) # $44.00
             expect(@blue_merchant.name).to appear_before(@white_merchant.name) # $34.00
@@ -226,7 +216,7 @@ RSpec.describe 'Admin Merchants Index', type: :feature do
       it "displays the date of the top 5 merchants most profitable days" do 
          visit admin_merchants_path
 
-         within "#top_merchants" do
+         within ".top-merchants" do
 
          expect(page).to have_content(@green_merchant.name)
          expect(page).to have_content(@green_merchant.best_day.strftime("%B %d, %Y"))
