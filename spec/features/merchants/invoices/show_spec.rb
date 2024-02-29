@@ -12,7 +12,7 @@ RSpec.describe 'Merchant_invoices Show Page', type: :feature do
     
     @cust_1 = Customer.create!(first_name: "Joey", last_name: "Ondricka")
     
-    @invoice1 = Invoice.create!(customer_id: @cust_1.id, status: 1)
+    @invoice1 = Invoice.create!(customer_id: @cust_1.id, status: 1, created_at: "Thu, 29 Feb 2024 00:58:37.838123000 UTC +00:00")
     
     @invoice_item_1 = InvoiceItem.create!(item_id: @item1.id, invoice_id: @invoice1.id, quantity: 5, unit_price: 2546, status: "shipped") #5000
     @invoice_item_3 = InvoiceItem.create!(item_id: @item2.id, invoice_id: @invoice1.id, quantity: 2, unit_price: 5367, status: "shipped") #2000
@@ -27,7 +27,7 @@ RSpec.describe 'Merchant_invoices Show Page', type: :feature do
 
       expect(page).to have_content("Invoice #{@invoice1.id}")
       expect(page).to have_content("Status: completed")
-      expect(page).to have_content("Created on: Wednesday, February 28, 2024") 
+      expect(page).to have_content("Created on: Thursday, February 29, 2024") 
       expect(page).to have_content("Joey Ondricka")
     end
     
@@ -35,21 +35,21 @@ RSpec.describe 'Merchant_invoices Show Page', type: :feature do
     it "lists all items on the invoice" do
       visit merchant_invoice_path(@green_merchant, @invoice1)
       
-      within"#invoice_item-#{@invoice_item_1.id}" do
+      within"#invoice-item-#{@invoice_item_1.id}" do
         expect(page).to have_content(@invoice_item_1.item.name)
         expect(page).to have_content(@invoice_item_1.quantity)
         expect(page).to have_content("Unit Price: $#{@invoice_item_1.converted_unit_price}")
         expect(page).to have_content(@invoice_item_1.status)
       end
       
-      within"#invoice_item-#{@invoice_item_3.id}" do
+      within"#invoice-item-#{@invoice_item_3.id}" do
         expect(page).to have_content(@invoice_item_3.item.name)
         expect(page).to have_content(@invoice_item_3.quantity)
         expect(page).to have_content("Unit Price: $#{@invoice_item_3.converted_unit_price}")
         expect(page).to have_content(@invoice_item_3.status)
       end
 
-      within"#invoice_item-#{@invoice_item_4.id}" do
+      within"#invoice-item-#{@invoice_item_4.id}" do
         expect(page).to have_content(@invoice_item_4.item.name)
         expect(page).to have_content(@invoice_item_4.quantity)
         expect(page).to have_content("Unit Price: $#{@invoice_item_4.converted_unit_price}")
@@ -59,10 +59,33 @@ RSpec.describe 'Merchant_invoices Show Page', type: :feature do
       expect(page).not_to have_content(@invoice_item_5.id)
     end
 
-    # User Story 16
+      # User Story 16
     it "Displays total revenue from all items on invoice" do
       visit merchant_invoice_path(@green_merchant, @invoice1)
       expect(page).to have_content(@invoice_item_1.total_revenue)
+    end
+
+      #User Story 18 
+    it "Can update an item status" do
+      visit merchant_invoice_path(@green_merchant, @invoice1)
+      within"#invoice-item-#{@invoice_item_1.id}" do
+      # I see that each invoice item status is a select field
+      expect(page).to have_select("status")
+      # And I see that the invoice item’s current status is selected
+      # When I click this select field,
+      select("Disabled", from: "status")
+      # Then I can select a new status for the Item,
+      # And next to the select field I see a button to “Update Item Status”
+      expect(page).to have_button("Update Item Status") #this is the button name
+      # When I click this button
+      click_button("Update Item Status")
+    end
+    expect(current_path).to eq(merchant_invoice_path(@green_merchant, @invoice1))
+    # I am taken back to the merchant invoice show page
+    # And I see that my Item’s status has now been updated
+    within"#invoice-item-#{@invoice_item_1.id}" do
+        expect(page).to have_content("Disabled")
+      end
     end
   end
 end

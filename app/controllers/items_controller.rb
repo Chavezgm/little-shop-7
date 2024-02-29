@@ -20,31 +20,30 @@ class ItemsController < ApplicationController
   end
 
   def update
-    @merchant = Merchant.find(params[:merchant_id])
-    @item = @merchant.items.find(params[:id])
-    @item.update(item_params)
-
-    if !params[:status]
-
-      redirect_to(merchant_item_path(@merchant, @item))
-
+    merchant = Merchant.find(params[:merchant_id])
+    item = merchant.items.find(params[:id])
+    
+    if params[:invoice_id] 
+      item.update(status: item_params[:status].to_i)
+      redirect_to merchant_invoice_path(merchant, params[:invoice_id])
+    elsif params[:status]
+      item.update(item_params)
+      redirect_to(merchant_item_path(merchant, item))
       flash[:alert] = "Item information successfully updated!!"
-
     else 
-
-      redirect_to(merchant_items_path(@merchant))
-
+      item.update(item_params)
+      redirect_to(merchant_items_path(merchant))
     end
   end
 
   def create 
-    @merchant = Merchant.find(params[:merchant_id])
-    item = @merchant.items.new(item_params)
+    merchant = Merchant.find(params[:merchant_id])
+    item = merchant.items.new(item_params)
     item.status = "disabled"
   
     if item.save
       flash[:alert] = "Item created!!"
-      redirect_to merchant_items_path(@merchant)
+      redirect_to merchant_items_path(merchant)
     else 
       render :new
     end

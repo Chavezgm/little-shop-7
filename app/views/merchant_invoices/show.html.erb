@@ -1,19 +1,26 @@
-<h1>Invoice <%= "#{@invoice.id}"%>
-<h3>Status: <%= "#{@invoice.status}"%>
-<h3>Created on: <%= "#{@invoice.created_at.strftime("%A, %B %d, %Y")}"%>
-<h3>Customer Name: <%= "#{@invoice.customer.first_name} #{@invoice.customer.last_name}"%>
+<h1>Invoice <%= "#{@invoice.id}"%></h1>
+<h3>Status: <%= "#{@invoice.status}"%></h1>
+<h3>Created on: <%= "#{@invoice.created_at.strftime("%A, %B %d, %Y")}"%></h3>
+<h3>Customer Name: <%= "#{@invoice.customer.first_name} #{@invoice.customer.last_name}"%></h3>
 
 <h2>Items: </h2>
 <ul>
 <% @merchant.invoice_items.each do |invoice_item| %> 
-	<div id=<%="invoice_item-#{invoice_item.id}"%>> 
+	<div id="invoice-item-<%= invoice_item.id %>"> 
 		<li>
 			<h4>Item: <%= invoice_item.item.name %> </h4>
 			<p>Quantity: <%= invoice_item.quantity %> </p>
 			<p>Unit Price: $<%= invoice_item.converted_unit_price %> </p>
-			<p>Status: <%= invoice_item.status %> 
+			<p>Status: <%= invoice_item.status %> </p>
 		</li>
 	<h4>Total Revenue: <%= invoice_item.total_revenue %></h4>
-			</div> 
+
+
+	<%= form_with url:  merchant_item_path(@merchant, invoice_item.item, invoice_id: invoice_item.invoice.id), method: :patch, data: {turbo: false} do |f| %>
+        Status: <%= f.select "status", options_for_select([["Disabled", 1], ["Enabled", 0]]), value: invoice_item.item.status%>
+        <%= f.submit "Update Item Status"  %>
+    <% end %>
+
+	</div> 
 <% end %>
 <ul>
