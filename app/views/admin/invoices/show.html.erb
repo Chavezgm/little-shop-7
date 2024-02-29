@@ -28,7 +28,7 @@
             <p>Status: <%= invoice_item.status.capitalize %></p>
             <p> - </p>
          </li>
-      <h4>Total Revenue: $<%= invoice_item.total_revenue.round(2) %></h4>
+      <h4>Total Revenue: <%= invoice_item.total_revenue %></h4>
       </div>
    <% end %>
    </ul>
